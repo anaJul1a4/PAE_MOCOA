@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mocoa 2017 — Informe visual interactivo</title>
+<style>
+  :root {
+    --ink: #1A1A1A; --ink-muted: #5B6472; --surface: #FFFFFF; --surface-alt: #F7F8FA;
+    --border: #E5E7EB; --accent: #B3241C;
+    --obs: #1E7A6E; --est: #C97A2B; --reanal: #6A3D9A; --sat: #5C2E0A; --dem: #5B6472; --derived: #2A6592;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); background:var(--surface-alt); line-height:1.55; }
+  header.hero { background:linear-gradient(135deg,#0E3A5C,#2A6592); color:#fff; padding:40px 24px 30px; }
+  header.hero .wrap { max-width:820px; margin:0 auto; }
+  header.hero h1 { font-size:1.65rem; margin:0 0 8px; font-weight:600; }
+  header.hero p { font-size:0.95rem; opacity:0.92; margin:6px 0; }
+  header.hero .meta { font-size:0.8rem; opacity:0.72; margin-top:12px; }
+
+  nav.toc { max-width:820px; margin:-18px auto 28px; background:#fff; border-radius:10px;
+    box-shadow:0 4px 18px rgba(15,30,50,0.10); padding:16px 22px; }
+  nav.toc h2 { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-muted); margin:0 0 8px; }
+  nav.toc ol { columns:2; column-gap:28px; margin:0; padding-left:18px; font-size:0.86rem; }
+  nav.toc li { margin-bottom:4px; }
+  nav.toc a { color:var(--derived); text-decoration:none; }
+
+  main { max-width:820px; margin:0 auto; padding:0 20px 70px; }
+
+  section.block { margin:38px 0 8px; }
+  section.block > h2 { font-size:1.2rem; border-bottom:3px solid var(--derived); padding-bottom:7px; margin-bottom:5px; }
+  section.block > p.intro { color:var(--ink-muted); font-size:0.9rem; margin-top:3px; }
+
+  article.card { background:#fff; border:1px solid var(--border); border-radius:12px;
+    padding:18px 20px 20px; margin:18px 0; box-shadow:0 1px 4px rgba(15,30,50,0.05); }
+  article.card h3 { margin:0 0 3px; font-size:1rem; }
+  article.card .fname { font-family:"SF Mono",Consolas,monospace; font-size:0.72rem; color:var(--ink-muted); }
+  .chart { width:100%; margin:10px 0 12px; }
+  .chart-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .chart-row.cols4 { grid-template-columns:1fr 1fr 1fr 1fr; }
+  @media (max-width:760px) { .chart-row, .chart-row.cols4 { grid-template-columns:1fr; } }
+
+  .badge { display:inline-block; font-size:0.65rem; font-weight:700; letter-spacing:0.03em;
+    text-transform:uppercase; color:#fff; padding:2px 8px; border-radius:999px; margin:0 5px 8px 0; }
+  .badge.obs{background:var(--obs);} .badge.est{background:var(--est);}
+  .badge.reanal{background:var(--reanal);} .badge.sat{background:var(--sat);}
+  .badge.dem{background:var(--dem);} .badge.derived{background:var(--derived);}
+
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px; }
+  @media (max-width:720px) { .cols { grid-template-columns:1fr; } nav.toc ol{columns:1;} }
+  .cols h4 { font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-muted); margin:0 0 5px; }
+  .cols p { margin:0; font-size:0.88rem; }
+  .cols .pred { border-left:3px solid var(--accent); padding-left:12px; }
+  .cols .clima { border-left:3px solid var(--derived); padding-left:12px; }
+
+  .callout { background:#FFF7ED; border-left:3px solid var(--est); padding:9px 13px; font-size:0.84rem;
+    border-radius:0 6px 6px 0; margin-top:10px; }
+  .callout.info { background:#EFF6FB; border-left-color:var(--derived); }
+  .callout.warn { background:#FEF2F2; border-left-color:var(--accent); }
+  .callout.method { background:#F3F4F6; border-left-color:var(--ink-muted); font-size:0.82rem; }
+  .callout.method strong { color:var(--ink); }
+  .hint { font-size:0.78rem; color:var(--ink-muted); font-style:italic; margin:2px 0 8px; }
+
+  section.synth { background:#0E3A5C; color:#fff; border-radius:14px; padding:26px 26px; margin:48px 0 28px; }
+  section.synth h2 { margin-top:0; font-size:1.2rem; }
+  section.synth ol { padding-left:20px; } section.synth li { margin-bottom:9px; font-size:0.93rem; }
+
+  footer { text-align:center; color:var(--ink-muted); font-size:0.78rem; padding:26px 0 46px; }
+  a.back-top { position:fixed; bottom:20px; right:20px; background:var(--derived); color:#fff;
+    border-radius:999px; width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    text-decoration:none; font-size:1.05rem; box-shadow:0 3px 10px rgba(0,0,0,0.25); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Mocoa 2017 — Informe visual interactivo</h1>
+    <p>Gráficas interactivas (Plotly, sin necesidad de internet): las series de tiempo tienen
+    barra deslizadora para desplazarse y hacer zoom; los mapas se navegan con scroll/arrastre.
+    Ordenado por relevancia para la discusión, no por orden de generación.</p>
+    <p class="meta">Fuentes: Copernicus GLO-30, GOES-16 ABI, CHIRPS v2.0, IDEAM ·
+    ver <code>docs/analysis_extra_methodology.md</code> para el detalle metodológico completo.</p>
+  </div>
+</header>
+
+<nav class="toc">
+  <h2>Contenido</h2>
+  <ol>
+    <li><a href="#vacio">1. El vacío de monitoreo</a></li>
+    <li><a href="#noche">2. La noche del evento, 3 fuentes</a></li>
+    <li><a href="#chirps-fallo">3. Por qué CHIRPS no lo vio</a></li>
+    <li><a href="#umbrales">4. Umbrales de lluvia detonante</a></li>
+    <li><a href="#conveccion">5. La señal de convección (GOES)</a></li>
+    <li><a href="#antecedente">6. Antecedente, terreno y caudal estimado</a></li>
+    <li><a href="#confiabilidad">7. Comparación interanual (IDEAM)</a></li>
+    <li><a href="#climatologia">8. Series y ciclo anual por fuente</a></li>
+    <li><a href="#sintesis">Síntesis</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ============ 1. VACIO DE MONITOREO ============ -->
+<section class="block" id="vacio">
+  <h2>1. El vacío de monitoreo</h2>
+  <p class="intro">El hallazgo estructural del que dependen todos los demás: dónde está la
+  cuenca y qué tan lejos están las estaciones de donde realmente se genera la escorrentía.</p>
+
+  <article class="card">
+    <span class="badge derived">Derivado del DEM</span><span class="badge obs">Estaciones IDEAM</span>
+    <h3>Cuenca, red de drenaje y estaciones activas — arrastra y haz scroll para zoom</h3>
+    <div id="map-cuenca-drenaje" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> DEM GLO-30 (30 m)
+    procesado con D8 (pysheds): dirección de flujo, acumulación, red de drenaje (celdas con
+    acumulación &gt;500) y polígono de cuenca delimitado desde el punto de salida (snap a
+    máxima acumulación en radio de 15 px). Estaciones ubicadas por coordenadas del catálogo
+    IDEAM.</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>Ninguna estación con dato de 2017 está en la cabecera (&gt;1500 m). Acueducto Mocoa
+        está en la salida; El Pepino, El Sauce y Universidad de Nariño quedan fuera del
+        polígono, a 8-45 km. Un modelo de alerta alimentado por estas estaciones mide la
+        lluvia lejos de donde realmente se genera la crecida.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>Fija la geometría (356.8 km², salida a 1.1 km del centro urbano) usada en todo
+        cálculo posterior de precipitación areal y balance hídrico.</p></div>
+    </div>
+    <div class="callout warn">Cuantificado directamente sobre el DEM: el <strong>95.6%</strong>
+    del área de la cuenca está a más de 5 km de Acueducto Mocoa o El Pepino (las únicas
+    estaciones con dato confirmado en 2017), el <strong>81.4%</strong> a más de 10 km, y la
+    distancia media a la estación más cercana es de <strong>16.1 km</strong> (máxima 28.6 km).
+    Ver el final de la sección 3 para la evidencia de que, además, la celda más lluviosa de la
+    cuenca cayó por encima de 1500 msnm el 100% de los días del evento — justo en esa zona sin
+    cobertura.</div>
+  </article>
+
+  <article class="card">
+    <span class="badge dem">DEM</span>
+    <h3>Contexto regional — Andes y piedemonte amazónico (dominio ampliado)</h3>
+    <div id="map-regional" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> mismo GLO-30 remuestreado
+    a ~240 m, ahora sobre un dominio ampliado con 4° de margen en cada lado respecto al bbox
+    original (-82.0,-6.5,-62.8,7.5 en vez de -78.0,-2.5,-66.8,3.5), mismo criterio usado para
+    la extracción GOES ampliada de la animación. Solo elevación cruda, sin procesamiento
+    hidrológico adicional; celdas oceánicas sin cobertura GLO-30 quedan en blanco (sin dato,
+    no un valor de relleno).</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>El salto de +3000 m en menos de 40 km explica por qué el tiempo de concentración
+        de la cuenca es de horas: cualquier tormenta en la cabecera llega al valle muy rápido.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>Ubica Mocoa en la franja de piedemonte amazónico, la más lluviosa de la región.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- ============ 2. LA NOCHE DEL EVENTO ============ -->
+<section class="block" id="noche">
+  <h2>2. La noche del evento, 3 fuentes a la vez</h2>
+  <p class="intro">Vista inicial ya enfocada en el pico (31 mar–2 abr); arrastra la barra
+  deslizadora inferior para ver el contexto completo de 24 días (13 mar–5 abr).</p>
+
+  <article class="card">
+    <span class="badge obs">IDEAM · observado</span>
+    <h3>Precipitación horaria</h3>
+    <div id="chart-event-ideam" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> precipitación de 10 min
+    de Acueducto Mocoa y El Pepino, agregada a totales horarios (suma por hora); series
+    observadas sin relleno en esta ventana.</div>
+  </article>
+  <article class="card">
+    <span class="badge sat">GOES-16 · satelital, fase de pruebas</span>
+    <h3>Temperatura de brillo (Tb), promedio sobre la cuenca — eje invertido</h3>
+    <div id="chart-event-goes" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> Tb de la banda 13
+    promediada sobre los píxeles cuyo centro cae dentro del polígono de cuenca, una escena
+    cada ~15 min; huecos de datos &gt;20 min se cortan con NaN para no dibujar una línea recta
+    falsa sobre el vacío.</div>
+  </article>
+  <article class="card">
+    <span class="badge est">CHIRPS · estimado satelital</span>
+    <h3>Precipitación diaria (promedio areal de la cuenca)</h3>
+    <div id="chart-event-chirps" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> promedio simple de las
+    celdas CHIRPS (0.05°) cuyo centro cae dentro del polígono; un valor por día, porque CHIRPS
+    no tiene resolución horaria.</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>El pico de IDEAM y el mínimo de Tb caen exactamente juntos (1 abr, 04:45 UTC). El
+        máximo de CHIRPS del mes ocurre 4 días antes (27 marzo), un día sin nada relevante en
+        las otras tres fuentes — la convección y la lluvia puntual eran observables juntas casi
+        en tiempo real; CHIRPS no.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>Este es el mismo valor diario que alimenta la climatología CHIRPS 1981-2018 usada
+        en las secciones 3, 4 y 8 — la serie areal de la cuenca, no un punto de estación.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- ============ 3. POR QUE CHIRPS NO LO VIO ============ -->
+<section class="block" id="chirps-fallo">
+  <h2>3. Por qué CHIRPS no lo vio</h2>
+  <p class="intro">La pieza de predictibilidad más contundente del informe: se cuantifica,
+  no solo se afirma, por qué un producto satelital calibrado como CHIRPS no habría servido
+  de alerta para este evento específico.</p>
+
+  <article class="card">
+    <span class="badge est">CHIRPS 1981-2018</span>
+    <h3>Extremos históricos: 2017 no es récord en ninguna ventana</h3>
+    <p class="hint">2017 resaltado en rojo · pasa el cursor sobre cualquier barra para el valor exacto</p>
+    <div class="chart-row cols4">
+      <div><div id="chart-extremes-1" class="chart"></div><p class="hint" style="text-align:center">máx. 1 día</p></div>
+      <div><div id="chart-extremes-2" class="chart"></div><p class="hint" style="text-align:center">máx. 3 días</p></div>
+      <div><div id="chart-extremes-3" class="chart"></div><p class="hint" style="text-align:center">máx. 5 días</p></div>
+      <div><div id="chart-extremes-4" class="chart"></div><p class="hint" style="text-align:center">máx. 7 días</p></div>
+    </div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> para cada ventana (1, 3, 5,
+    7 días) se calcula la suma móvil diaria de la serie areal CHIRPS 1981-2018 y se toma el
+    máximo de cada año; las barras son esos 38 máximos anuales, comparando el rango de 2017
+    contra los demás años.</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>El máximo diario de 2017 ocupa el <strong>puesto 33 de 38</strong> (percentil 16).
+        En ninguna de las 4 ventanas 2017 es récord — CHIRPS registró un año climatológicamente
+        anodino, no uno extremo.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>Identifica qué años sí son extremos reales en la serie, útil para contrastar el
+        régimen atmosférico de esos años contra el de 2017.</p></div>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="badge est">CHIRPS</span>
+    <h3>Anomalía estandarizada mensual, 1981-2018</h3>
+    <div id="chart-chirps-anomalies" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> total de precipitación por
+    mes calendario (CHIRPS areal); Z = (total del mes 2017 − media 1981-2018 de ese mismo mes)
+    / desviación estándar de ese mismo mes. Climatología mensual, no diaria.</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>Marzo 2017: Z=+2.70 (P95, no récord). Abril 2017: Z=−0.49 (P34, bajo lo normal). El
+        mes completo de abril no habría disparado ninguna alerta climatológica.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>Meses con Z&gt;2.5 ocurren varias veces por década: un marzo húmedo no es raro por
+        sí solo — lo raro fue lo que pasó en 24 horas dentro de ese mes húmedo.</p></div>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="badge obs">IDEAM</span><span class="badge est">CHIRPS</span>
+    <h3>Consistencia IDEAM–CHIRPS (no es "validación independiente": CHIRPS incorpora estaciones)</h3>
+    <div class="chart-row">
+      <div id="chart-ideam-chirps-scatter" class="chart"></div>
+      <div id="chart-ideam-chirps-series" class="chart"></div>
+    </div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> pares diarios IDEAM
+    (observado, sin relleno) vs. CHIRPS en la misma fecha, 2017-2018. r y sesgo calculados
+    sobre el conjunto completo y, por separado, solo sobre días con IDEAM &gt;20 mm ("día
+    intenso").</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>En días de precipitación intensa (IDEAM &gt;20 mm) la correlación es
+        <strong>r=−0.008</strong> — esencialmente cero — y CHIRPS captura solo el 33% de la
+        magnitud. Falla justo donde más importaría para una alerta.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>En el conjunto general (r=0.21, débil pero no nulo) sí hay algo de señal climática
+        compartida; el desacople es específico de los extremos convectivos.</p></div>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="badge est">CHIRPS · mapas espaciales</span>
+    <h3>Marzo vs abril 2017: precipitación y anomalía estandarizada</h3>
+    <p class="hint">Arrastra y haz scroll para zoom; el contorno rojo es el límite de la cuenca</p>
+    <div class="chart-row">
+      <div><div id="map-chirps-marzo" class="chart"></div><p class="hint" style="text-align:center">marzo 2017</p></div>
+      <div><div id="map-chirps-abril" class="chart"></div><p class="hint" style="text-align:center">abril 2017</p></div>
+      <div><div id="map-chirps-Z-marzo" class="chart"></div><p class="hint" style="text-align:center">Z marzo 2017</p></div>
+      <div><div id="map-chirps-Z-abril" class="chart"></div><p class="hint" style="text-align:center">Z abril 2017</p></div>
+    </div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> suma mensual de
+    precipitación CHIRPS por celda para marzo/abril 2017. Anomalía Z por celda = (total del
+    mes 2017 en esa celda − media 1981-2018 de esa celda en ese mismo mes) / desviación
+    estándar de esa celda en ese mismo mes — climatología pixel a pixel, dominio regional
+    completo (no recortado a la cuenca).</div>
+    <div class="callout info">¿Por qué se ven "pixeladas"? CHIRPS es una grilla real de 0.05°
+    (~5.5 km por celda) — cada bloque que ves ES una celda real, no un artefacto de
+    renderizado. Se usó interpolación "nearest" a propósito para no inventar valores
+    suavizados entre celdas; haz zoom para confirmar que cada bloque corresponde a una celda
+    real de la grilla.</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>La anomalía Z de abril confirma a escala espacial lo mismo que a escala puntual: no
+        hubo ninguna señal regional de mes anómalo que sirviera de alerta climática.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>Abril 2017 muestra déficit en gran parte de la Amazonía occidental mientras Mocoa
+        queda en una franja casi neutra — contexto regional más amplio que el de la cuenca sola.</p></div>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="badge est">CHIRPS · recorte estricto al polígono</span>
+    <h3>Anomalía diaria pixel a pixel, solo dentro de la cuenca (no la región amplia)</h3>
+    <p class="hint">9 celdas CHIRPS con centro dentro del polígono · climatología día-de-año
+    ±7 días, 1981-2018 (no solo mensual) · promedio espacial diario, 13 mar–5 abr 2017</p>
+    <div id="chart-pixel-anomaly-Z" class="chart"></div>
+    <p class="hint">Elevación de la celda con mayor precipitación cada día (color = mm ese día)</p>
+    <div id="chart-pixel-anomaly-elev" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> restringido a las 9 celdas
+    CHIRPS con centro dentro del polígono. Climatología día-de-año ±7 días (no mensual)
+    1981-2018 por celda; Z diario por celda, promediado espacialmente. La celda de mayor
+    lluvia/anomalía de cada día se cruza con el DEM para obtener su elevación.</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>El 31 de marzo la Z diaria promedio dentro de la cuenca es <strong>0.11</strong> —
+        prácticamente nula. El pico real de anomalía de todo el mes cae el <strong>27 de
+        marzo</strong> (Z=3.84), cuatro días antes, sin relación con el evento. Confirma a
+        resolución diaria y recortado exactamente al polígono lo mismo que ya se vio a escala
+        mensual y regional: CHIRPS no marcó el 31 de marzo como distinto.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>La celda más lluviosa de la cuenca estuvo por encima de <strong>1500 msnm el 100%
+        de los días</strong> del evento — ni un solo día la lluvia más intensa se registró cerca
+        de donde están las estaciones (650-760 m). El vacío de monitoreo no es incidental: es
+        estructural, coincide todos los días con dónde realmente llueve más.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- ============ 4. UMBRALES DE LLUVIA DETONANTE ============ -->
+<section class="block" id="umbrales">
+  <h2>4. Umbrales de lluvia detonante</h2>
+  <p class="intro">En vez de un percentil propio calculado con nuestra serie corta, se aplican
+  umbrales ya publicados en la literatura: Aristizábal et al. (2010, Valle de Aburrá) y
+  Ramos-Cañón et al. (2023, específico de Mocoa — usa exactamente la misma estación primaria,
+  Acueducto Mocoa 10 min, que este proyecto).</p>
+
+  <article class="card">
+    <span class="badge obs">IDEAM</span><span class="badge est">CHIRPS</span>
+    <h3>Acumulado de 4 días — umbral específico de Mocoa (Ramos-Cañón et al. 2023)</h3>
+    <div id="chart-threshold-4d" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> suma móvil de 4 días
+    (IDEAM 10 min agregado a diario; CHIRPS ya diario); el primer cruce del umbral se compara
+    contra el pico del evento (1 abr, 04:45 UTC) para calcular horas de anticipación.</div>
+    <div class="callout warn">Las líneas de umbral (50/95/140 mm) son una <strong>lectura
+    aproximada de la Figura 8</strong> del artículo (banda verde/amarilla/naranja/roja a los 4
+    días) — el texto no las tabula exactamente. El propio artículo confirma en texto (no en
+    gráfico) que la acumulada de 4 días del 31 de marzo de 2017 fue "una de las más altas que
+    se ha presentado para la zona", usando la misma estación (Acueducto Mocoa) de este
+    proyecto.</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>IDEAM alcanza <strong>150.8 mm</strong> — supera el umbral de alerta roja (140 mm)
+        con solo <strong>29 horas</strong> de anticipación. CHIRPS alcanza apenas
+        <strong>92.4 mm</strong> — ni siquiera cruza el umbral naranja (95 mm). En el umbral
+        diseñado específicamente para esta cuenca, la estación habría alertado y el satélite no.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>El umbral de Ramos-Cañón se calibró con física de la propia cuenca (modelación
+        fluido-dinámica + estabilidad de taludes), no con una climatología genérica — es la
+        referencia más específica al sitio disponible.</p></div>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="badge obs">IDEAM</span><span class="badge est">CHIRPS</span>
+    <h3>Acumulado de 5 días — umbral genérico (Aristizábal et al. 2010, Valle de Aburrá)</h3>
+    <div id="chart-threshold-5d" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> misma suma móvil (aquí de
+    5 días) y mismo cálculo de anticipación contra el pico del evento que en la tarjeta
+    anterior, con el umbral de Aristizábal et al. (2010) en vez del de Ramos-Cañón.</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>Aquí ambas fuentes superan el umbral (100 mm): IDEAM con 163.9 mm (29 h de
+        anticipación), CHIRPS con 101.2 mm — apenas por encima, con 77 h de anticipación. A
+        diferencia del umbral específico de Mocoa, este umbral genérico no distingue tan
+        claramente entre fuentes.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>Valor dado por el usuario, no verificado contra el artículo original en esta sesión
+        — tratar como referencia orientativa, no como cita verificada.</p></div>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="badge obs">IDEAM</span><span class="badge est">CHIRPS</span>
+    <h3>Ventanas cortas de apoyo (1/3/7/15 días)</h3>
+    <div class="chart-row">
+      <div id="chart-threshold-1d" class="chart"></div>
+      <div id="chart-threshold-3d" class="chart"></div>
+      <div id="chart-threshold-7d" class="chart"></div>
+      <div id="chart-threshold-15d" class="chart"></div>
+    </div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> mismas sumas móviles
+    (1/3/7/15 días) sin línea de umbral graficada — solo de apoyo visual para las ventanas de
+    4-5 días que sí tienen referencia publicada.</div>
+    <div class="callout info">Los umbrales de 30/60/90 días de Aristizábal (60/160/200 mm) se
+    calcularon pero <strong>no se grafican</strong>: en IDEAM dan <code>NaN</code> (huecos de
+    datos reales caen dentro de ventanas tan largas) y en CHIRPS se superan casi trivialmente
+    en ambas fuentes durante casi todo el año — Mocoa es un clima mucho más lluvioso que el
+    Valle de Aburrá, así que un umbral calibrado allá probablemente no discrimina nada aquí.
+    Tabla completa en <code>data/analysis/rainfall_thresholds_summary.csv</code>.</div>
+  </article>
+
+  <article class="card">
+    <span class="badge derived">Dato cruzado externo</span>
+    <h3>Validación externa del modelo de escorrentía (sección 6)</h3>
+    <p>El Servicio Geológico Colombiano (García et al. 2017, citado en Ramos-Cañón et al. 2023)
+    reportó un caudal real del evento de <strong>1500 a 12000 m³/s</strong>. Nuestro modelo
+    SCS-CN (sección 6) estimó 886-1439 m³/s de <em>agua clara</em> — por debajo del rango real,
+    consistente con que el evento incluyó carga sólida masiva (flujo de detritos) que el modelo
+    de agua clara no captura. La Tabla 1 del artículo da umbrales de caudal ya calibrados por
+    sensor del SAT (alerta roja: 157.8 a 375.1 m³/s por sección transversal individual).</p>
+  </article>
+</section>
+
+<!-- ============ 5. CONVECCION GOES ============ -->
+<section class="block" id="conveccion">
+  <h2>5. La señal de convección (GOES-16)</h2>
+  <p class="intro">Nunca se interpreta Tb como lluvia directa: Tb más baja → tope nuboso
+  potencialmente más frío/alto → mayor indicio de convección profunda.</p>
+
+  <article class="card">
+    <span class="badge sat">GOES-16 · fase de pruebas</span>
+    <h3>Animación Tb, dominio ampliado (realce IR estilo NOAA/NHC), 13 mar–5 abr 2017</h3>
+    <video controls preload="metadata" style="width:100%; background:#000; border-radius:6px;">
+      <source src="../figs/animation_convectivo/mocoa_goes16_ir_2017-03-13_2017-04-05_web.mp4" type="video/mp4">
+      Tu navegador no soporta la reproducción de video HTML5 — abre el archivo directamente:
+      <code>figs/animation_convectivo/mocoa_goes16_ir_2017-03-13_2017-04-05_web.mp4</code>
+    </video>
+    <p class="hint">2165 escenas a 12 fps (~3 min de video, 900px, 88.2 MB — recomprimido para
+    poder publicarse en GitHub Pages bajo el límite de 100 MB por archivo; el original sin
+    recomprimir a mayor resolución queda en
+    <code>mocoa_goes16_ir_2017-03-13_2017-04-05.mp4</code>) · estrella magenta = ubicación de
+    Mocoa · líneas grises = fronteras nacionales</p>
+
+    <h4 style="margin:16px 0 4px;">Versión GIF — solo el evento, más liviana</h4>
+    <img src="../figs/animation_convectivo/mocoa_goes16_ir_evento_2017-03-30_2017-04-02.gif"
+         alt="Animación GIF GOES-16 IR, 30 mar - 2 abr 2017" style="width:100%; border-radius:6px;">
+    <p class="hint">379 escenas (30 mar–2 abr), 8 fps, resolución reducida (400×325 px),
+    40.3 MB — recorte enfocado en el pico del evento, para vista rápida sin depender del
+    reproductor de video.</p>
+
+    <div class="callout method"><strong>Cómo se construyó:</strong> Tb remuestreada una sola
+    vez del grid curvilíneo nativo del satélite a un grid lat/lon regular (vecino más cercano,
+    <code>cKDTree</code>), reutilizando la misma tabla de índices para las 2165 escenas.
+    Paleta: <strong>aproximación visual</strong> al estilo de realce IR de NOAA/NHC (grises
+    para nubes tibias, verde→amarillo→rojo→granate→blanco para topes cada vez más fríos) —
+    no es la curva de calibración oficial (IR4/MB), que no está disponible en este proyecto.</div>
+    <div class="callout warn">Fase de pruebas post-lanzamiento de GOES-16 (89.5°W, sin
+    corrección de paralaje) — mismo dato ya usado en el resto de esta sección, solo que ahora
+    en dominio espacial ampliado (-82.0,-6.5,-62.8,7.5) para dar contexto regional al sistema
+    convectivo, no únicamente a la cuenca.</div>
+  </article>
+
+  <article class="card">
+    <span class="badge sat">GOES-16 · fase de pruebas</span>
+    <h3>Tb percentil 10 y fracción de nubes frías, 13 mar–5 abr 2017</h3>
+    <div id="chart-goes-p10" class="chart"></div>
+    <div id="chart-goes-fraction" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> por escena GOES (~15 min),
+    percentil 10 de Tb entre los píxeles de la cuenca (P10 = umbral del 10% más frío, no el
+    mínimo absoluto) y fracción de píxeles con Tb&lt;235 K (umbral estándar de convección
+    profunda).</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>La Tb mínima absoluta (193.9 K) cae en la hora del evento — pero la fracción de
+        nubes frías llega a 100% también en otros días (13-14 marzo) sin consecuencias.
+        Extremidad puntual y cobertura areal son señales distintas.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>La convección profunda (Tb&lt;235K) es casi diaria en esta franja andino-amazónica
+        en temporada de lluvias — contexto de fondo, no anomalía aislada del 31 de marzo.</p></div>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="badge sat">GOES-16</span><span class="badge obs">IDEAM</span>
+    <h3>Correlación cruzada Tb(t) vs precipitación(t+lag)</h3>
+    <div id="chart-goes-lag" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> correlación cruzada entre
+    Tb mínima horaria (GOES) y precipitación horaria (IDEAM), desplazando la lluvia de −6 a +6
+    horas respecto a Tb; se reporta el lag de |r| máxima. El panel diario repite el cálculo
+    agregando ambas series a total/mínimo diario.</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>El lag que maximiza la correlación es −5 h (r=−0.27) — la Tb fría antecede
+        modestamente a la lluvia, pero con correlación demasiado débil para ser un predictor
+        operativo por sí solo. Exploratorio, no causal.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>A escala diaria (CHIRPS vs Tb mínima diaria) la correlación sube a r=−0.53 — la
+        relación convección-lluvia es más clara al agregar en el tiempo.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- ============ 5. ANTECEDENTE Y CAUDAL ============ -->
+<section class="block" id="antecedente">
+  <h2>6. Antecedente, terreno y caudal estimado</h2>
+
+  <article class="card">
+    <span class="badge obs">IDEAM</span><span class="badge est">CHIRPS</span>
+    <h3>Acumulados móviles 1/3/5/7/15 días</h3>
+    <div class="chart-row">
+      <div><div id="chart-antecedent-1d" class="chart"></div><p class="hint" style="text-align:center">1 día</p></div>
+      <div><div id="chart-antecedent-3d" class="chart"></div><p class="hint" style="text-align:center">3 días</p></div>
+      <div><div id="chart-antecedent-5d" class="chart"></div><p class="hint" style="text-align:center">5 días</p></div>
+      <div><div id="chart-antecedent-7d" class="chart"></div><p class="hint" style="text-align:center">7 días</p></div>
+    </div>
+    <div id="chart-antecedent-15d" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> misma suma móvil que en la
+    sección de umbrales (1/3/5/7/15 días), aquí sin líneas de umbral — solo para comparar
+    directamente IDEAM vs CHIRPS en cada ventana durante los 24 días del evento.</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>A 1-3 días las fuentes divergen por completo; a 15 días convergen razonablemente.
+        Por debajo de ~7 días, CHIRPS no es confiable como insumo de alerta para esta cuenca.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>El acumulado de 15 días antes del evento (IDEAM: 174 mm) muestra un suelo ya
+        saturándose — el contexto de humedad antecedente usado para justificar AMC-III en el
+        modelo de escorrentía.</p></div>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="badge dem">DEM derivado</span>
+    <h3>Elevación y acumulación de flujo (log₁₀)</h3>
+    <div class="chart-row">
+      <div id="map-topo-elev" class="chart"></div>
+      <div id="map-topo-flowacc" class="chart"></div>
+    </div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> elevación cruda del DEM
+    recortado a la cuenca. Acumulación de flujo = número de celdas aguas arriba de cada celda
+    (algoritmo D8, pysheds), graficada en log₁₀ porque el rango crudo abarca varios órdenes de
+    magnitud.</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>Pendiente media 29.1° (máx 67°): la cuenca concentra flujo con extrema rapidez por
+        gravedad — un factor de peligro estructural permanente, no algo que dependa del evento
+        de 2017 en particular.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>La red de drenaje (naranja) muestra exactamente dónde convergen los tributarios que
+        alimentaron la crecida — base física para cualquier zonificación futura de riesgo.</p></div>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="badge derived">Estimado · no calibrado</span>
+    <h3>Hidrograma simulado (SCS-CN + hidrograma unitario), 3 escenarios</h3>
+    <div id="chart-runoff" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> lluvia efectiva por método
+    SCS-CN (Ia=0.2S) sobre la tormenta aislada (30 mar 12:00–2 abr 00:00, no los 24 días
+    completos), convolucionada con hidrograma unitario triangular SCS; 3 escenarios varían
+    CN(II)=70/80/90 y la condición de humedad antecedente (AMC II o III).</div>
+    <div class="callout warn">No existe caudal observado para 2017 en esta cuenca (los
+    datasets de nivel/caudal de IDEAM devuelven 403 Forbidden). Esto es una estimación de
+    ingeniería para cuenca no aforada, no una serie observada — ver sección 4 para el
+    contraste con el caudal real reportado por el SGC (1500-12000 m³/s).</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>Con solo la lluvia de Acueducto Mocoa, el modelo ya proyecta picos de 886-1439 m³/s
+        — un orden de magnitud extremo para 357 km². Un modelo lluvia-escorrentía operativo
+        habría mostrado la magnitud del peligro con horas de antelación (Tc≈7.8 h).</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>El caudal base (20.5 m³/s) viene del balance hídrico de largo plazo (P−ETR, Turc) —
+        conecta el evento extremo con el régimen hidrológico medio de la cuenca.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- ============ 6. COMPARACION INTERANUAL ============ -->
+<section class="block" id="confiabilidad">
+  <h2>7. Comparación interanual (IDEAM)</h2>
+
+  <article class="card">
+    <span class="badge obs">IDEAM</span>
+    <h3>2017 vs 2018, misma ventana calendario</h3>
+    <p class="hint">Mismo eje Y en ambos paneles para comparación directa</p>
+    <div class="chart-row">
+      <div id="chart-year-2017" class="chart"></div>
+      <div id="chart-year-2018" class="chart"></div>
+    </div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> misma ventana calendario
+    (fechas iguales) extraída de la serie horaria IDEAM para 2017 y 2018 por separado,
+    graficadas con el mismo eje Y para comparar magnitud directamente.</div>
+    <div class="cols">
+      <div class="pred"><h4>Predictibilidad</h4>
+        <p>2018 nunca supera 19 mm/h en toda la ventana; 2017 llega a 63 mm/h en un pico
+        aislado. La forma —no solo el total— distingue un año catastrófico de uno normal.</p></div>
+      <div class="clima"><h4>Climatología</h4>
+        <p>Con solo 2 años no se generaliza, pero da una primera medida de cuánto varía esta
+        ventana calendario específica año a año.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- ============ 7. CLIMATOLOGIA POR FUENTE ============ -->
+<section class="block" id="climatologia">
+  <h2>8. Series y ciclo anual por fuente</h2>
+  <p class="intro">Caracterización de cada fuente por separado: serie completa y ciclo anual
+  (banda P25-P75 + mediana por mes, cada punto es un año, 2017 marcado con estrella roja).</p>
+
+  <article class="card">
+    <span class="badge obs">IDEAM</span>
+    <h3>Acueducto Mocoa — serie diaria y ciclo anual</h3>
+    <div id="chart-ideam-daily" class="chart"></div>
+    <div id="chart-ideam-cycle" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> serie diaria observada sin
+    relleno. Ciclo anual: percentiles 10/25/50/75/90 por mes calendario sobre los años con
+    dato (aquí solo 2), 2017 resaltado como línea propia.</div>
+    <p class="hint">Con solo 2 años de registro, cada mes tiene 1-2 puntos: insuficiente
+    para climatología robusta por sí sola — de ahí la necesidad de CHIRPS (38 años) como
+    referencia climatológica principal.</p>
+  </article>
+
+  <article class="card">
+    <span class="badge est">CHIRPS</span>
+    <h3>Promedio areal de la cuenca — serie diaria y ciclo anual (1981-2018)</h3>
+    <div id="chart-chirps-daily-full" class="chart"></div>
+    <div id="chart-chirps-cycle" class="chart"></div>
+    <div class="callout method"><strong>Cómo se construyó:</strong> serie diaria areal
+    1981-2018 completa. Ciclo anual: percentiles 10/25/50/75/90 por mes calendario sobre 38
+    años, mediana como referencia y 2017 resaltado como línea propia sobre la envolvente.</div>
+    <p class="hint">38 años dan un ciclo anual robusto: ~2630 mm/año en promedio areal, con
+    máximos abr-jul y mínimos dic-feb.</p>
+  </article>
+</section>
+
+<!-- ============ SINTESIS ============ -->
+<section class="synth" id="sintesis">
+  <h2>Síntesis: ¿qué tan predecible fue la avenida de Mocoa?</h2>
+  <ol>
+    <li><strong>A escala de meses y de satélite de baja resolución (CHIRPS), el evento es
+    invisible.</strong> Ni el total mensual, ni el máximo diario histórico, ni la anomalía
+    espacial marcan nada extraordinario.</li>
+    <li><strong>A escala de horas con observación puntual + satélite de alta frecuencia
+    (IDEAM 10 min + GOES 15 min), la señal es clara y sincronizada</strong> — con un margen de
+    anticipación de solo 1-2 horas entre convección visible y pico de lluvia en superficie.</li>
+    <li><strong>La cabecera de la cuenca no tiene ninguna estación con dato de 2017</strong> —
+    el 95.6% del área está a más de 5 km de la estación más cercana, y la celda más lluviosa de
+    la cuenca estuvo por encima de 1500 msnm el 100% de los días del evento: el vacío de
+    monitoreo coincide exactamente con dónde más llovía.</li>
+    <li><strong>Con umbrales externos ya validados, no un percentil propio, la estación sí
+    habría alertado y el satélite no</strong>: en el umbral de 4 días específico de Mocoa
+    (Ramos-Cañón et al. 2023), IDEAM supera la alerta roja con 29 h de anticipación; CHIRPS
+    nunca llega ni a la alerta naranja.</li>
+    <li><strong>La topografía es un factor de riesgo estructural, no episódico</strong>: horas
+    de tiempo de concentración y pendientes de hasta 67° convierten cualquier lluvia intensa
+    sostenida en una amenaza de respuesta muy rápida.</li>
+  </ol>
+  <p style="margin-bottom:0;">El evento fue predecible <em>en principio</em> con la
+  combinación correcta de datos de alta frecuencia, pero no con la infraestructura de
+  monitoreo y los productos climatológicos realmente disponibles esa noche.</p>
+</section>
+
+</main>
+
+<footer>
+  Proyecto MOCOA · ver <code>data/DATA_INVENTORY.md</code> y
+  <code>docs/analysis_extra_methodology.md</code> para el detalle metodológico completo.
+</footer>
+
+<a class="back-top" href="#" title="Volver arriba">↑</a>
+
+<script src="assets/plotly.min.js"></script>
+<script src="assets/data.js"></script>
+<script src="assets/report.js"></script>
+</body>
+</html>
